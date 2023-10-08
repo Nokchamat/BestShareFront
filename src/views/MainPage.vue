@@ -5,14 +5,14 @@
       <div id="banner" class="box container">
         <div class="row">
           <div class="col-7 col-12-medium">
-            <h2>Hi. This is Verti.</h2>
-            <p>It's a free responsive site template by HTML5 UP</p>
+            <h2>BEST Page</h2>
+            <p>속지 공유 사이트</p>
           </div>
           <div class="col-5 col-12-medium">
             <ul>
-              <li><a href="#" class="button large icon solid fa-arrow-circle-right">Ok let's go</a>
+              <li><a href="signin" class="button large icon solid fa-arrow-circle-right">로그인</a>
               </li>
-              <li><a href="#" class="button alt large icon solid fa-question-circle">More info</a>
+              <li><a href="signup" class="button large icon solid fa-arrow-circle-right">회원가입</a>
               </li>
             </ul>
           </div>
