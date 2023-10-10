@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <!-- Heading -->
-    <h1>{{ sign.title }}</h1>
+    <h1>{{ title }}</h1>
     <!-- Links -->
     <ul class="links">
       <li>
@@ -26,7 +26,7 @@
       </div>
       <!-- repeat password input -->
       <div class="input__block">
-        <input v-model="sign.repeatPassword" type="password" placeholder="비밀번호 확인"
+        <input v-model="repeatPassword" type="password" placeholder="비밀번호 확인"
                v-bind:class="{'repeat__password': selectBlock}" class="input"
                id="repeat__password"/>
       </div>
@@ -53,7 +53,7 @@
       </div>
       <!-- sign in button -->
       <button @click="selectBlock ? postSignIn() : postSignUp()" class="signin__btn">
-        {{ sign.bottomButton }}
+        {{ bottomButton }}
       </button>
     </div>
     <!-- separator -->
@@ -95,12 +95,12 @@ export default {
   data() {
     return {
       selectBlock: true,
+      title: "SIGN IN",
+      bottomButton: "Sign in",
+      repeatPassword: "",
       sign: {
-        title: "SIGN IN",
-        bottomButton: "Sign in",
         email: "",
         password: "",
-        repeatPassword: "",
         name: "",
         nickname: "",
         phoneNumber: "",
@@ -149,12 +149,12 @@ export default {
       }));
       form.append("profileImage", this.profileImage[0]);
 
-      if (this.password !== this.repeatPassword) {
+      if (this.sign.password !== this.repeatPassword) {
         this.modalData = "비밀번호가 일치하지 않습니다.";
         this.changeModalState()
       } else {
 
-        axios.post("http://localhost:8080/v1/user/sign-up", form,{
+        axios.post("http://localhost:8080/v1/user/sign-up", form, {
           headers: {
             "Content-Type": "multipart/form-data",
           },
@@ -166,7 +166,12 @@ export default {
           this.signIn()
         }).catch(err => {
           console.log(err.response.data.message);
-          this.modalData = err.response.data.messages
+          if (err.response.data.message === undefined) {
+            this.modalData = err.response.data.messages.toString().replace(/,/gi, '  ')
+          } else {
+            this.modalData = err.response.data.message;
+          }
+
           this.changeModalState()
         });
 
