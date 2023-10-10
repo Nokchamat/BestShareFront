@@ -1,8 +1,7 @@
 <template>
   <div class="container">
     <!-- Heading -->
-    <h1>{{ title }}</h1>
-
+    <h1>{{ sign.title }}</h1>
     <!-- Links -->
     <ul class="links">
       <li>
@@ -18,36 +17,43 @@
       <!-- email input -->
       <div v-bind:class="selectBlock ? 'first-input__block' : 'signup-input__block'"
            class="first-input input__block">
-        <input v-model="email" type="email" placeholder="이메일" class="input" id="email"/>
+        <input v-model="sign.email" type="email" placeholder="이메일" class="input" id="email"/>
       </div>
       <!-- password input -->
       <div class="input__block">
-        <input v-model="password" type="password" placeholder="비밀번호" class="input" id="password"/>
+        <input v-model="sign.password" type="password" placeholder="비밀번호" class="input"
+               id="password"/>
       </div>
       <!-- repeat password input -->
       <div class="input__block">
-        <input v-model="repeatPassword" type="password" placeholder="비밀번호 확인"
+        <input v-model="sign.repeatPassword" type="password" placeholder="비밀번호 확인"
                v-bind:class="{'repeat__password': selectBlock}" class="input"
                id="repeat__password"/>
       </div>
       <!-- name input -->
       <div class="input__block">
-        <input v-model="name" type="text" placeholder="이름"
+        <input v-model="sign.name" type="text" placeholder="이름"
                v-bind:class="{'repeat__password': selectBlock}" class="input" id="name"/>
       </div>
       <!-- nickname input -->
       <div class="input__block">
-        <input v-model="nickname" type="text" placeholder="닉네임"
+        <input v-model="sign.nickname" type="text" placeholder="닉네임"
                v-bind:class="{'repeat__password': selectBlock}" class="input" id="nickname"/>
       </div>
       <!-- phoneNumber input -->
       <div class="input__block">
-        <input v-model="phoneNumber" type="number" placeholder="휴대전화 예시)01012341234"
+        <input v-model="sign.phoneNumber" type="text" placeholder="휴대전화 예시)01012341234"
                v-bind:class="{'repeat__password': selectBlock}" class="input" id="phone__number"/>
+      </div>
+      <!-- profileImage input -->
+      <div class="input__block">
+        <input multiple type="file" @change="uploadImage" ref="profileImage"
+               v-bind:class="{'repeat__password': selectBlock}"
+               class="input" id="profile_image"/>
       </div>
       <!-- sign in button -->
       <button @click="selectBlock ? postSignIn() : postSignUp()" class="signin__btn">
-        {{ bottomButton }}
+        {{ sign.bottomButton }}
       </button>
     </div>
     <!-- separator -->
@@ -74,7 +80,6 @@
 
 <script>
 import axios from "axios";
-import Header from "@/components/layout/Header.vue";
 import pageShareBoard from "@/views/PageShareBoard.vue";
 import Modal from "@/views/Modal.vue";
 
@@ -82,25 +87,28 @@ export default {
   computed: {
     pageShareBoard() {
       return pageShareBoard
-    }
+    },
   },
   components: {
     Modal,
-    Header,
   },
   data() {
     return {
-      title: "SIGN IN",
-      bottomButton: "Sign in",
       selectBlock: true,
-      email: "",
-      password: "",
-      repeatPassword: "",
-      name: "",
-      nickname: "",
-      phoneNumber: "",
+      sign: {
+        title: "SIGN IN",
+        bottomButton: "Sign in",
+        email: "",
+        password: "",
+        repeatPassword: "",
+        name: "",
+        nickname: "",
+        phoneNumber: "",
+      },
+      profileImage: new File([], ""),
+
       modalState: false,
-      modalData: ""
+      modalData: "",
     }
   },
   methods: {
@@ -117,8 +125,8 @@ export default {
     },
     postSignIn() {
       axios.post("http://localhost:8080/v1/user/sign-in", {
-            email: this.email,
-            password: this.password
+            email: this.sign.email,
+            password: this.sign.password
           },
           {
             headers: {
@@ -127,6 +135,7 @@ export default {
           })
       .then(res => {
         console.log(JSON.stringify(res.headers.get('Authorization')))
+        this.$router.push("/")
       }).catch(err => {
         console.log(err.response.data.message);
         this.modalData = err.response.data.message
@@ -134,18 +143,40 @@ export default {
       });
     },
     postSignUp() {
-      axios
-      .post("http://localhost:8080/user/v1/sign-up")
-      .then((res) => {
-        console.log(res.data);
-        this.page = res.data;
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+      const form = new FormData();
+      form.append('signUpForm', new Blob([JSON.stringify(this.sign)], {
+        type: "application/json"
+      }));
+      form.append("profileImage", this.profileImage[0]);
+
+      if (this.password !== this.repeatPassword) {
+        this.modalData = "비밀번호가 일치하지 않습니다.";
+        this.changeModalState()
+      } else {
+
+        axios.post("http://localhost:8080/v1/user/sign-up", form,{
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        })
+        .then(res => {
+          console.log(JSON.stringify(res.headers.get('Authorization')))
+          this.modalData = "회원가입이 완료되었습니다."
+          this.changeModalState()
+          this.signIn()
+        }).catch(err => {
+          console.log(err.response.data.message);
+          this.modalData = err.response.data.messages
+          this.changeModalState()
+        });
+
+      }
     },
     changeModalState() {
       this.modalState = !this.modalState
+    },
+    uploadImage() {
+      this.profileImage = this.$refs.profileImage.files
     }
   },
 }
