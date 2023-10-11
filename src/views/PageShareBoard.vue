@@ -9,13 +9,14 @@
             <a :href=this.page.pagePdfFileKey> 다운로드 </a>
             <h1>{{ page.title }}</h1>
             <p> {{ page.userNickname }}</p>
-            <p> 조회수 {{ page.viewCount }}</p>
+            <div>
+              <p> 조회수 {{ page.viewCount }}</p>
+              <button @click="addLikes" type="button">좋아요 누르기</button>
+            </div>
             <p> 좋아요 {{ page.likesCount }}</p>
             <p> 생성일 {{ page.createdAt }}</p>
           </div>
           <p style="clear: both"> {{ page.explains }}</p>
-          여기 : {{$route.params.id}}
-
 
         </article>
 
@@ -27,20 +28,28 @@
 <style scoped src="@/assets/template/assets/css/main.css"/>
 
 <script>
-import axios from "axios";
-import router from "@/router";
+import { getDetail } from "@/api/pageShareBoard";
 
 export default {
   data() {
     return {
       search: "",
-      page: "",
+      page: {
+        title: "",
+        userNickname: "",
+        viewCount: "",
+        createdAt: "",
+        likesCount: "",
+        explains: "",
+        thumbnailUrl: "",
+        pagePdfFileKey: ""
+      },
     }
   },
   methods: {
-    getDetailData() {
-      axios
-      .get("http://localhost:8080/v1/pageshareboard/" + this.$route.params.id)
+
+    getDetail() {
+      getDetail(this.$route.params.id)
       .then((res) => {
         console.log(res.data);
         this.page = res.data;
@@ -48,10 +57,10 @@ export default {
       .catch((error) => {
         console.log(error);
       });
-    }
+    },
   },
   mounted() {
-    this.getDetailData();
+    this.getDetail()
   }
 }
 

@@ -5,10 +5,10 @@
     <!-- Links -->
     <ul class="links">
       <li>
-        <a @click="signIn" href="#" id="signin">SIGN IN</a>
+        <a @click="signInButton" href="#" id="signin">SIGN IN</a>
       </li>
       <li>
-        <a @click="signUp" href="#" id="signup">SIGN UP</a>
+        <a @click="signUpButton" href="#" id="signup">SIGN UP</a>
       </li>
     </ul>
 
@@ -79,9 +79,9 @@
 <style scoped src="@/assets/template/assets/sass/sign.scss"/>
 
 <script>
-import axios from "axios";
 import pageShareBoard from "@/views/PageShareBoard.vue";
 import Modal from "@/views/Modal.vue";
+import {postSignIn, postSignUp} from '@/api/sign'
 
 export default {
   computed: {
@@ -106,33 +106,27 @@ export default {
         phoneNumber: "",
       },
       profileImage: new File([], ""),
-
       modalState: false,
       modalData: "",
     }
   },
   methods: {
-    signIn() {
+    signInButton() {
       this.title = "SIGN IN"
       this.bottomButton = "Sign in"
       this.selectBlock = "first-input__block"
       this.selectBlock = true
     },
-    signUp() {
+    signUpButton() {
       this.title = "SIGN UP"
       this.bottomButton = "Sign up"
       this.selectBlock = false
     },
     postSignIn() {
-      axios.post("http://localhost:8080/v1/user/sign-in", {
-            email: this.sign.email,
-            password: this.sign.password
-          },
-          {
-            headers: {
-              'content-type': 'application/json',
-            }
-          })
+      postSignIn({
+        email: this.sign.email,
+        password: this.sign.password
+      })
       .then(res => {
         console.log(JSON.stringify(res.headers.get('Authorization')))
         this.$router.push("/")
@@ -143,27 +137,16 @@ export default {
       });
     },
     postSignUp() {
-      const form = new FormData();
-      form.append('signUpForm', new Blob([JSON.stringify(this.sign)], {
-        type: "application/json"
-      }));
-      form.append("profileImage", this.profileImage[0]);
-
       if (this.sign.password !== this.repeatPassword) {
         this.modalData = "비밀번호가 일치하지 않습니다.";
         this.changeModalState()
       } else {
-
-        axios.post("http://localhost:8080/v1/user/sign-up", form, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        })
+        postSignUp(this.sign, this.profileImage[0])
         .then(res => {
           console.log(JSON.stringify(res.headers.get('Authorization')))
           this.modalData = "회원가입이 완료되었습니다."
           this.changeModalState()
-          this.signIn()
+          this.signInButton()
         }).catch(err => {
           console.log(err.response.data.message);
           if (err.response.data.message === undefined) {
@@ -171,10 +154,8 @@ export default {
           } else {
             this.modalData = err.response.data.message;
           }
-
           this.changeModalState()
         });
-
       }
     },
     changeModalState() {
