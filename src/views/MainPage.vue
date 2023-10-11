@@ -10,9 +10,9 @@
           </div>
           <div class="col-5 col-12-medium">
             <ul>
-              <li><a href="signin" class="button large icon solid fa-arrow-circle-right">로그인</a>
+              <li><a href="/signin" class="button large icon solid fa-arrow-circle-right">로그인</a>
               </li>
-              <li><a href="signup" class="button large icon solid fa-arrow-circle-right">회원가입</a>
+              <li><a href="/signup" class="button large icon solid fa-arrow-circle-right">회원가입</a>
               </li>
             </ul>
           </div>
@@ -58,9 +58,9 @@ img {
 </style>
 
 <script>
-import axios from "axios";
 import Header from "@/components/layout/Header.vue";
 import pageShareBoard from "@/views/PageShareBoard.vue";
+import {getAllList} from "@/api/pageShareBoard";
 
 export default {
   computed: {
@@ -71,15 +71,13 @@ export default {
   components: {Header},
   data() {
     return {
-      search: "",
       pageList: [],
       pageDetailLink : "pageshareboard/"
     }
   },
   methods: {
     getData() {
-      axios
-      .get("http://localhost:8080/v1/pageshareboard")
+      getAllList()
       .then((res) => {
         console.log(res.data);
         this.pageList = res.data.content;
@@ -87,7 +85,7 @@ export default {
       .catch((error) => {
         console.log(error);
       });
-    }
+    },
   },
   mounted() {
     this.getData();
