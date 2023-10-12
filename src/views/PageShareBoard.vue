@@ -11,9 +11,10 @@
             <p> {{ page.userNickname }}</p>
             <div>
               <p> 조회수 {{ page.viewCount }}</p>
-              <button @click="addLikes" type="button">좋아요 누르기</button>
+              <button @click="likesButton" type="button">좋아요 누르기</button>
             </div>
             <p> 좋아요 {{ page.likesCount }}</p>
+            <p> 좋아요 여부 {{ page.isLikes }}</p>
             <p> 생성일 {{ page.createdAt }}</p>
           </div>
           <p style="clear: both"> {{ page.explains }}</p>
@@ -28,7 +29,7 @@
 <style scoped src="@/assets/template/assets/css/main.css"/>
 
 <script>
-import { getDetail } from "@/api/pageShareBoard";
+import {addLikes, deleteLikes, getDetail} from "@/api/pageShareBoard";
 
 export default {
   data() {
@@ -42,21 +43,42 @@ export default {
         likesCount: "",
         explains: "",
         thumbnailUrl: "",
-        pagePdfFileKey: ""
+        pagePdfFileKey: "",
+        likesId: "",
+        isLikes: "",
       },
     }
   },
   methods: {
-
     getDetail() {
       getDetail(this.$route.params.id)
       .then((res) => {
-        console.log(res.data);
         this.page = res.data;
       })
       .catch((error) => {
         console.log(error);
       });
+    },
+    likesButton() {
+      if (this.page.isLikes) {
+        deleteLikes(this.page.likesId)
+        .then(() => {
+          this.page.isLikes = false;
+          this.page.likesCount--;
+        })
+        .catch((error) => {
+          console.log(error);
+        })
+      } else {
+        addLikes(this.$route.params.id)
+        .then(() => {
+          this.page.isLikes = true;
+          this.page.likesCount++;
+        })
+        .catch((error) => {
+          console.error(error);
+        })
+      }
     },
   },
   mounted() {
