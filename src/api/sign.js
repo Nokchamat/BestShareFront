@@ -1,8 +1,4 @@
-import axios from "axios";
-
-const apiInstance = axios.create({
-  baseURL: 'http://localhost:8080/v1'
-});
+import apiInstance from "@/api/index";
 
 function postSignIn(form) {
   return apiInstance.post('/user/sign-in',
