@@ -4,14 +4,21 @@ import router from "@/router";
 
 const apiInstance = axios.create({
   baseURL: 'http://localhost:8080/v1',
-  headers: {
-    Authorization: useCookies().cookies.get('accessToken')
-  },
 });
+
+apiInstance.interceptors.request.use(
+    (config) => {
+      config.headers.Authorization = useCookies().cookies.get('accessToken')
+      console.log('axios.js request : ' , config);
+      return config
+    },
+    (error) => {
+      return Promise.reject(error);
+    }
+);
 
 apiInstance.interceptors.response.use(
     (res) => {
-      console.log('axios.js response : ' , res);
       return res
     },
     (error) => {
@@ -23,7 +30,7 @@ apiInstance.interceptors.response.use(
         case 403:
           console.error(error.response.status + " 에러 발생")
           useCookies().cookies.remove('accessToken')
-          router.push("/signin")
+          router.push("/sign")
           alert("로그인이 필요합니다.")
       }
 

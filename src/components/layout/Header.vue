@@ -17,9 +17,9 @@
         <nav id="nav">
           <ul>
             <li class="current"><a href="/">Home</a></li>
-            <li><a href="left-sidebar.html">Left Sidebar</a></li>
-            <li><a href="right-sidebar.html">Right Sidebar</a></li>
-            <li><a href="no-sidebar.html">No Sidebar</a></li>
+            <li><a href="left-sidebar.html">게시글 작성</a></li>
+            <li><a href="/sign">로그인 및 회원 가입</a></li>
+            <li><a href="/myprofile">마이페이지</a></li>
           </ul>
         </nav>
 

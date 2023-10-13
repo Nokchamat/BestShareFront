@@ -2,6 +2,7 @@ import Home from "@/views/MainPage.vue";
 import {createRouter, createWebHistory} from "vue-router";
 import PageShareBoard from "@/views/PageShareBoard.vue";
 import Sign from "@/views/Sign.vue";
+import MyProfile from "@/views/MyProfile.vue";
 
 const routes = [
   {
@@ -13,12 +14,12 @@ const routes = [
     component: PageShareBoard
   },
   {
-    path: "/signin",
+    path: "/sign",
     component: Sign
   },
   {
-    path: "/signup",
-    component: Sign
+    path: "/myprofile",
+    component: MyProfile
   },
 ]
 

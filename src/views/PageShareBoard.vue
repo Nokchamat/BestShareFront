@@ -27,7 +27,6 @@
 </template>
 
 <style scoped src="@/assets/template/assets/css/main.css"/>
-
 <script>
 import {addLikes, deleteLikes, getDetail} from "@/api/pageShareBoard";
 
@@ -45,7 +44,7 @@ export default {
         thumbnailUrl: "",
         pagePdfFileKey: "",
         likesId: "",
-        isLikes: "",
+        isLikes: false,
       },
     }
   },
