@@ -7,8 +7,8 @@
           <div>
             <img :src=page.thumbnailUrl alt="" style="float: left">
             <a :href=this.page.pagePdfFileKey> 다운로드 </a>
-            <h1>{{ page.title }}</h1>
-            <p> {{ page.userNickname }}</p>
+            <h1>제목 : {{ page.title }}</h1>
+            <p> 작성자 : {{ page.userNickname }}</p>
             <div>
               <p> 조회수 {{ page.viewCount }}</p>
               <button @click="likesButton" type="button">좋아요 누르기</button>

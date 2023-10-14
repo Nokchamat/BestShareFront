@@ -97,7 +97,7 @@ div .profile-top {
 }
 div .profile-bottom {
   padding: 16px;
-  border: 1px solid rgba(255, 56, 92, 0.5);
+  border: 2px solid rgba(255, 56, 92, 0.5);
   border-radius: 10%;
 }
 
@@ -147,7 +147,7 @@ export default {
         .then((res) => {
           this.pageList = res.data.content;
           console.log(res)
-          this.pageListSize = res.data.size;
+          this.pageListSize = res.data.totalElements;
         })
         .catch((error) => {
           console.log(error);
