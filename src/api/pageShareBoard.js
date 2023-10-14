@@ -1,7 +1,11 @@
 import apiInstance from "@/api/index";
 
 function getAllList() {
-  return apiInstance.get("/pageshareboard")
+  return apiInstance.get("/pageshareboard?sort=viewCount,desc")
+}
+
+function getBestPageList() {
+  return apiInstance.get("/pageshareboard/best")
 }
 
 function getAllListByUserId(userId) {
@@ -20,4 +24,4 @@ function deleteLikes(likesId) {
   return apiInstance.delete("/likes/" + likesId)
 }
 
-export { getAllList, getDetail, addLikes, deleteLikes, getAllListByUserId }
+export { getAllList, getDetail, addLikes, deleteLikes, getAllListByUserId, getBestPageList }

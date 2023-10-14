@@ -302,7 +302,7 @@ input, select, textarea {
 		}
 
 		.row > .col-4 {
-			width: 33.33333%;
+			width: 20%;
 		}
 
 		.row > .off-4 {
@@ -310,7 +310,7 @@ input, select, textarea {
 		}
 
 		.row > .col-5 {
-			width: 41.66667%;
+			width: 33.33333%;
 		}
 
 		.row > .off-5 {
@@ -545,7 +545,7 @@ input, select, textarea {
 				}
 
 				.row > .col-4-xlarge {
-					width: 33.33333%;
+					width: 20%;
 				}
 
 				.row > .off-4-xlarge {
@@ -790,7 +790,7 @@ input, select, textarea {
 				}
 
 				.row > .col-4-large {
-					width: 33.33333%;
+					width: 20%;
 				}
 
 				.row > .off-4-large {
@@ -1035,7 +1035,7 @@ input, select, textarea {
 				}
 
 				.row > .col-4-medium {
-					width: 33.33333%;
+					width: 20%;
 				}
 
 				.row > .off-4-medium {
@@ -1280,7 +1280,7 @@ input, select, textarea {
 				}
 
 				.row > .col-4-small {
-					width: 33.33333%;
+					width: 20%;
 				}
 
 				.row > .off-4-small {
@@ -1469,7 +1469,7 @@ input, select, textarea {
 	}
 
 	header {
-		margin: 0 0 2em 0;
+		margin: 0 0 0.5em 0;
 	}
 
 		header h2, header h3 {
@@ -1790,7 +1790,7 @@ input, select, textarea {
 		}
 
 			.box.feature .inner {
-				padding: 4em 2em 3em 2em;
+				padding: 1em;
 			}
 
 			.box.feature h2 {
