@@ -10,9 +10,9 @@
           </div>
           <div class="col-5 col-12-medium">
             <ul>
-              <li><a href="/signin" class="button large icon solid fa-arrow-circle-right">로그인</a>
+              <li><a href="/sign" class="button large icon solid fa-arrow-circle-right">로그인</a>
               </li>
-              <li><a href="/signup" class="button large icon solid fa-arrow-circle-right">회원가입</a>
+              <li><a href="/sign" class="button large icon solid fa-arrow-circle-right">회원가입</a>
               </li>
             </ul>
           </div>
