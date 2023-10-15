@@ -43,7 +43,7 @@
                 <div id="features-wrapper">
                   <div class="container">
                     <div class="row">
-                      <div class="col-4 col-12-medium" v-for="item in pageList">
+                      <div class="col-5 col-12-medium" v-for="item in pageList">
 
                         <!-- Box -->
                         <section class="box feature">
