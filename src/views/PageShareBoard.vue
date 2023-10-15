@@ -40,7 +40,6 @@ import {addLikes, deleteLikes, getDetail} from "@/api/pageShareBoard";
 export default {
   data() {
     return {
-      search: "",
       pageShareBoardByUserUrl: "/pageshareboard/user/",
       page: {
         id: "",
