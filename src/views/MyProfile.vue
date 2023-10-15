@@ -14,13 +14,12 @@
                 <div class="profile-top">
                   <h3>마이 프로필</h3>
                   <a href="">
-                    <font-awesome-icon icon="pen-to-square" style="height: 24px" />
+                    <font-awesome-icon icon="pen-to-square" style="height: 24px"/>
                   </a>
                 </div>
                 <div class="profile-bottom">
-                  <img :src=profile.profileImageUrl id="profileImage" alt=""/>
+                  <img :src=profile.profileImageUrl id="profileImage" alt="프로필 이미지"/>
                   <div>
-                    <div>id : {{ profile.id }}</div>
                     <div>이메일 : {{ profile.email }}</div>
                     <div>이름 : {{ profile.name }}</div>
                     <div>닉네임 : {{ profile.nickname }}</div>
@@ -35,12 +34,12 @@
             <div id="content">
 
               <!-- Content -->
-              <h3> 작성한 게시물 : {{pageListSize}}</h3>
+              <h3> 작성한 게시물 : {{ pageListSize }}</h3>
               <article>
                 <div id="features-wrapper">
                   <div class="container">
                     <div class="row">
-                      <div class="col-4 col-12-medium" v-for="item in pageList" >
+                      <div class="col-4 col-12-medium" v-for="item in pageList">
 
                         <!-- Box -->
                         <section class="box feature">
@@ -50,8 +49,14 @@
                           <div class="inner">
                             <header>
                               <h2>{{ item.title }}</h2>
-                              <div>조회수 : {{ item.viewCount }}</div>
-                              <div>좋아요 : {{ item.likesCount }}</div>
+                              <div>
+                                <font-awesome-icon :icon="['fas', 'check']"/>
+                                {{ item.viewCount }}
+                              </div>
+                              <div>
+                                <font-awesome-icon :icon="['fas', 'heart']"/>
+                                {{ item.likesCount }}
+                              </div>
                             </header>
                           </div>
                         </section>
@@ -75,6 +80,10 @@
 
 <style scoped src="@/assets/template/assets/css/main.css"/>
 <style>
+input {
+  border: none;
+  font: inherit;
+}
 #profileImage {
   width: 100px;
   height: 100px;
@@ -83,6 +92,7 @@
   overflow: hidden;
   cursor: default;
 }
+
 div .profile-top {
   display: -webkit-box;
   display: -webkit-flex;
@@ -95,6 +105,7 @@ div .profile-top {
   height: 58px;
   border-bottom: 1px solid #F3F3F3;
 }
+
 div .profile-bottom {
   padding: 16px;
   border: 2px solid rgba(255, 56, 92, 0.5);
@@ -107,6 +118,11 @@ div .profile-bottom {
 <script>
 import Header from "@/components/layout/Header.vue";
 import pageShareBoard from "@/views/PageShareBoard.vue";
+import {getMyProfile} from "@/api/user";
+import {getAllListByUserId} from "@/api/pageShareBoard";
+
+import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
+
 export default {
   computed: {
     pageShareBoard() {
@@ -116,9 +132,9 @@ export default {
   components: {FontAwesomeIcon, Header},
   data() {
     return {
-      pageDetailLink : "pageshareboard/",
+      pageDetailLink: "pageshareboard/",
       pageListSize: "",
-      pageList:{
+      pageList: {
         id: "",
         title: "",
         thumbnailUrl: "",
@@ -162,9 +178,4 @@ export default {
     this.init();
   }
 }
-import {getMyProfile} from "@/api/user";
-import {getAllListByUserId} from "@/api/pageShareBoard";
-
-import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
-
 </script>
