@@ -4,6 +4,7 @@ import PageShareBoard from "@/views/PageShareBoard.vue";
 import Sign from "@/views/Sign.vue";
 import MyProfile from "@/views/MyProfile.vue";
 import PageShareBoardByUser from "@/views/PageShareBoardByUser.vue";
+import AddPageShareBoard from "@/views/AddPageShareBoard.vue";
 
 const routes = [
   {
@@ -17,6 +18,10 @@ const routes = [
   {
     path: "/pageshareboard/user/:id",
     component: PageShareBoardByUser
+  },
+  {
+    path: "/add-pageshareboard",
+    component: AddPageShareBoard
   },
   {
     path: "/sign",
