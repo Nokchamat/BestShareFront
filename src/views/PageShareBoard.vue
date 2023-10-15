@@ -9,11 +9,18 @@
             <a :href=this.page.pagePdfFileKey> 다운로드 </a>
             <h1>제목 : {{ page.title }}</h1>
             <p> 작성자 : {{ page.userNickname }}</p>
+            <a :href=pageShareBoardByUserUrl>작성자 게시물 더보기</a>
             <div>
-              <p> 조회수 {{ page.viewCount }}</p>
+              <p>
+                <font-awesome-icon :icon="['fas', 'check']"/>
+                {{ page.viewCount }}
+              </p>
               <button @click="likesButton" type="button">좋아요 누르기</button>
             </div>
-            <p> 좋아요 {{ page.likesCount }}</p>
+            <p>
+              <font-awesome-icon :icon="['fas', 'heart']"/>
+              {{ page.likesCount }}
+            </p>
             <p> 좋아요 여부 {{ page.isLikes }}</p>
             <p> 생성일 {{ page.createdAt }}</p>
           </div>
@@ -34,7 +41,10 @@ export default {
   data() {
     return {
       search: "",
+      pageShareBoardByUserUrl: "/pageshareboard/user/" + this.page,
       page: {
+        id: "",
+        userId: "",
         title: "",
         userNickname: "",
         viewCount: "",

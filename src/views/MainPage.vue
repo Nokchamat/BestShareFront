@@ -15,9 +15,15 @@
               </a>
               <div class="inner">
                 <header>
-                  <h2>{{ item.title }}</h2>
-                  <div>조회수 : {{ item.viewCount }}</div>
-                  <div>좋아요 : {{ item.likesCount }}</div>
+                  <h3>{{ item.title }}</h3>
+                  <div>
+                    <font-awesome-icon :icon="['fas', 'check']" />
+                    {{ item.viewCount }}
+                  </div>
+                  <div>
+                    <font-awesome-icon :icon="['fas', 'heart']"/>
+                    {{ item.likesCount }}
+                  </div>
                 </header>
               </div>
             </section>
@@ -44,8 +50,14 @@
               <div class="inner">
                 <header>
                   <h2>{{ item.title }}</h2>
-                  <div>조회수 : {{ item.viewCount }}</div>
-                  <div>좋아요 : {{ item.likesCount }}</div>
+                  <div>
+                    <font-awesome-icon :icon="['fas', 'check']" />
+                    {{ item.viewCount }}
+                  </div>
+                  <div>
+                    <font-awesome-icon :icon="['fas', 'heart']" />
+                    {{ item.likesCount }}
+                  </div>
                 </header>
               </div>
             </section>

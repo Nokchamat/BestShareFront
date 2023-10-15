@@ -9,7 +9,6 @@ const apiInstance = axios.create({
 apiInstance.interceptors.request.use(
     (config) => {
       config.headers.Authorization = useCookies().cookies.get('accessToken')
-      console.log('axios.js request : ' , config);
       return config
     },
     (error) => {
