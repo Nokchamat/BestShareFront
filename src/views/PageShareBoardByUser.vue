@@ -12,21 +12,16 @@
               <!-- Sidebar -->
               <section>
                 <div class="profile-top">
-                  <h3>마이 프로필</h3>
-                  <a href="">
-                    <font-awesome-icon icon="pen-to-square" style="height: 24px"/>
-                  </a>
+                  <h3>작성자 프로필</h3>
                 </div>
                 <div class="profile-bottom">
                   <img :src=profile.profileImageUrl id="profileImage" alt="프로필 이미지"/>
                   <div>
-                    <div>이메일 : {{ profile.email }}</div>
-                    <div>이름 : {{ profile.name }}</div>
                     <div>닉네임 : {{ profile.nickname }}</div>
-                    <div>전화번호 : {{ profile.phoneNumber }}</div>
                     <div>
                       <font-awesome-icon :icon="['far', 'user']" />
-                      {{profile.followerCount}}
+                      : {{ profile.followerCount }}
+                      <button type="button" @click="followButton" style="font-size: 10px">팔로우</button>
                     </div>
                   </div>
                 </div>
@@ -122,7 +117,7 @@ div .profile-bottom {
 <script>
 import Header from "@/components/layout/Header.vue";
 import pageShareBoard from "@/views/PageShareBoard.vue";
-import {getMyProfile} from "@/api/user";
+import {getProfileByUserId, addFollow, deleteFollow} from "@/api/user";
 import {getAllListByUserId} from "@/api/pageShareBoard";
 
 import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
@@ -147,27 +142,22 @@ export default {
       },
       profile: {
         id: "",
-        email: "",
-        name: "",
         nickname: "",
-        phoneNumber: "",
         profileImageUrl: "",
         followerCount: "",
+        isFollow: "",
+        followId: "",
       },
     }
   },
   methods: {
     init() {
-      var userId;
-
-      getMyProfile()
+      getProfileByUserId(this.$route.params.id)
       .then((res) => {
         this.profile = res.data;
-        userId = res.data.id
-        getAllListByUserId(userId)
+        getAllListByUserId(this.$route.params.id)
         .then((res) => {
           this.pageList = res.data.content;
-          console.log(res)
           this.pageListSize = res.data.totalElements;
         })
         .catch((error) => {
@@ -178,6 +168,25 @@ export default {
         console.log(error);
       })
     },
+    followButton() {
+      if (this.profile.isFollow) {
+        deleteFollow(this.profile.followId)
+        .then(() => {
+          this.profile.followerCount--;
+        })
+        .catch((error) => {
+          console.error(error)
+        })
+      } else {
+        addFollow(this.profile.id)
+        .then(() => {
+          this.profile.followerCount++;
+        })
+        .catch((error) => {
+          console.error(error)
+        })
+      }
+    }
   },
   mounted() {
     this.init();

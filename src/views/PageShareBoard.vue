@@ -41,7 +41,7 @@ export default {
   data() {
     return {
       search: "",
-      pageShareBoardByUserUrl: "/pageshareboard/user/" + this.page,
+      pageShareBoardByUserUrl: "/pageshareboard/user/",
       page: {
         id: "",
         userId: "",
@@ -63,6 +63,7 @@ export default {
       getDetail(this.$route.params.id)
       .then((res) => {
         this.page = res.data;
+        this.pageShareBoardByUserUrl += this.page.userId;
       })
       .catch((error) => {
         console.log(error);

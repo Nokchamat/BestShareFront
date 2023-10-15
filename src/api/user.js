@@ -4,4 +4,16 @@ function getMyProfile() {
   return apiInstance.get("/user")
 }
 
-export { getMyProfile }
+function getProfileByUserId(userId) {
+  return apiInstance.get("/user/" + userId)
+}
+
+function addFollow(followingUserId) {
+  return apiInstance.post("/user/" + followingUserId + "/follow")
+}
+
+function deleteFollow(followId) {
+  return apiInstance.delete("/follow/" + followId)
+}
+
+export { getMyProfile, getProfileByUserId, addFollow, deleteFollow}
