@@ -11,7 +11,7 @@
         <ul class="friend-list" v-for="room in chatroom">
 
           <li class="active bounceInDown">
-            <a href="#" class="clearfix">
+            <a @dblclick="getMessage(room.id)" class="clearfix">
               <img :src="room.userProfileImageUrl" alt="" class="img-circle">
               <div class="friend-name">
                 <strong>{{ room.userNickname }}</strong>
@@ -31,99 +31,21 @@
         <div class="chat-message">
           <ul class="chat">
 
-            <li class="left clearfix">
-              <div class="chat-body clearfix" id="left-body">
-                <div class="header">
-                  <img src="https://bootdey.com/img/Content/user_3.jpg" alt="User Avatar">
-                  <strong class="primary-font">John Doe</strong>
-                  <small class="pull-right text-muted"><i class="fa fa-clock-o">
-                  </i> 12 mins ago</small>
+            <div v-for="chatMessage in chatMessages" v-if="clickChatRoom">
+              <li class="clearfix" :class="chatMessage.sender===this.chatroom[currentRoomId].userId ? left : right" >
+                <div class="chat-body clearfix" :id="chatMessage.sender===this.chatroom[currentRoomId].userId ? left : right">
+                  <div class="header">
+                    <img src="https://bootdey.com/img/Content/user_3.jpg" alt="User Avatar">
+                    <strong class="primary-font">{{chatroom[currentRoomId].userNickname}}</strong>
+                    <small class="pull-right text-muted"><i class="fa fa-clock-o">
+                    </i> 12 mins ago</small>
+                  </div>
+                  <p>
+                    {{ chatMessage.message }}
+                  </p>
                 </div>
-                <p>
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                </p>
-              </div>
-            </li>
-
-            <li class="right clearfix">
-              <div class="chat-body clearfix" id="right-body">
-                <div class="header">
-                  <strong class="primary-font">Sarah</strong>
-                  <small class="pull-right text-muted"><i class="fa fa-clock-o"></i> 13 mins
-                    ago</small>
-                </div>
-                <p>
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur bibendum ornare
-                  dolor, quis ullamcorper ligula sodales at.
-                </p>
-              </div>
-            </li>
-            <li class="right clearfix">
-              <div class="chat-body clearfix" id="right-body">
-                <div class="header">
-                  <strong class="primary-font">Sarah</strong>
-                  <small class="pull-right text-muted"><i class="fa fa-clock-o"></i> 13 mins
-                    ago</small>
-                </div>
-                <p>
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur bibendum ornare
-                  dolor, quis ullamcorper ligula sodales at.
-                </p>
-              </div>
-            </li>
-            <li class="right clearfix">
-              <div class="chat-body clearfix" id="right-body">
-                <div class="header">
-                  <strong class="primary-font">Sarah</strong>
-                  <small class="pull-right text-muted"><i class="fa fa-clock-o"></i> 13 mins
-                    ago</small>
-                </div>
-                <p>
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur bibendum ornare
-                  dolor, quis ullamcorper ligula sodales at.
-                </p>
-              </div>
-            </li><li class="right clearfix">
-            <div class="chat-body clearfix" id="right-body">
-              <div class="header">
-                <strong class="primary-font">Sarah</strong>
-                <small class="pull-right text-muted"><i class="fa fa-clock-o"></i> 13 mins
-                  ago</small>
-              </div>
-              <p>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur bibendum ornare
-                dolor, quis ullamcorper ligula sodales at.
-              </p>
+              </li>
             </div>
-          </li>
-            <li class="right clearfix">
-              <div class="chat-body clearfix" id="right-body">
-                <div class="header">
-                  <strong class="primary-font">Sarah</strong>
-                  <small class="pull-right text-muted"><i class="fa fa-clock-o"></i> 13 mins
-                    ago</small>
-                </div>
-                <p>
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur bibendum ornare
-                  dolor, quis ullamcorper ligula sodales at.
-                </p>
-              </div>
-            </li>
-            <li class="right clearfix">
-              <div class="chat-body clearfix" id="right-body">
-                <div class="header">
-                  <strong class="primary-font">Sarah</strong>
-                  <small class="pull-right text-muted"><i class="fa fa-clock-o"></i> 13 mins
-                    ago</small>
-                </div>
-                <p>
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur bibendum ornare
-                  dolor, quis ullamcorper ligula sodales at.
-                </p>
-              </div>
-            </li>
-
-
 
           </ul>
         </div>
@@ -143,16 +65,29 @@
 </template>
 
 <script>
-import {getChatRoom} from "@/api/chat"
+import {getChatRoom, getChatMessage} from "@/api/chat"
 
 export default {
   data() {
     return {
+      left: "left",
+      right: "right",
+      currentRoomId: "",
+      clickChatRoom: false,
       chatroom: {
         id: "",
+        userId: "",
         userProfileImageUrl: "",
         userNickname: "",
         createdAt: ""
+      },
+      chatMessages: {
+        id: "",
+        chattingRoomId: "",
+        sender: "",
+        message: "",
+        createdAt: "",
+        read: false
       },
 
     }
@@ -163,6 +98,18 @@ export default {
       .then((res) => {
         console.log(res.data.content)
         this.chatroom = res.data.content
+      })
+      .catch((err) => {
+        console.error(err)
+      })
+    },
+    getMessage(chatroomId) {
+      this.currentRoomId = chatroomId
+      getChatMessage(chatroomId)
+      .then((res) => {
+        console.log(res.data.content)
+        this.chatMessages = res.data.content
+        this.clickChatRoom = true
       })
       .catch((err) => {
         console.error(err)
@@ -179,16 +126,30 @@ export default {
 
 <style>
 
-#left-body {
+
+#left {
   margin-left: 0;
   margin-right: 20%;
 }
 
-#right-body {
+#right {
   margin-left: 20%;
   margin-right: 0;
 }
 
+.chat-message {
+  background: #f9f9f9;
+}
+
+.chat {
+  list-style: none;
+  margin: 0;
+  padding-right: 32px;
+
+  height: 600px; /* 적절한 높이 설정 (원하는 높이로 조정) */
+  max-height: 600px; /* 적절한 높이 설정 (원하는 높이로 조정) */
+  overflow-y: auto;
+}
 
 body {
   padding-top: 0;
@@ -268,15 +229,7 @@ small, .small {
   padding: 60px 20px 115px;
 }
 
-.chat {
-  list-style: none;
-  margin: 0;
-  padding-right: 32px;
 
-  height: 600px; /* 적절한 높이 설정 (원하는 높이로 조정) */
-  max-height: 600px; /* 적절한 높이 설정 (원하는 높이로 조정) */
-  overflow-y: auto;
-}
 
 /* 스크롤바 스타일 (선택 사항) */
 .chat::-webkit-scrollbar {
@@ -286,11 +239,6 @@ small, .small {
 .chat::-webkit-scrollbar-thumb {
   background-color: #888; /* 스크롤바 색상 설정 */
   border-radius: 5px; /* 스크롤바 모양 설정 */
-}
-
-
-.chat-message {
-  background: #f9f9f9;
 }
 
 .chat li img {
@@ -307,6 +255,7 @@ img {
 
 .chat-body {
   padding-bottom: 20px;
+  background: #fff;
 }
 
 .chat li.left .chat-body {
