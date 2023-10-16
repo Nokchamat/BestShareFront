@@ -5,6 +5,7 @@ import Sign from "@/views/Sign.vue";
 import MyProfile from "@/views/MyProfile.vue";
 import PageShareBoardByUser from "@/views/PageShareBoardByUser.vue";
 import AddPageShareBoard from "@/views/AddPageShareBoard.vue";
+import Chat from "@/views/Chat.vue";
 
 const routes = [
   {
@@ -30,6 +31,10 @@ const routes = [
   {
     path: "/myprofile",
     component: MyProfile
+  },
+  {
+    path: "/chat",
+    component: Chat
   },
 ]
 

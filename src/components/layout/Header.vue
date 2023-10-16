@@ -20,6 +20,7 @@
             <li><a href="/add-pageshareboard">게시글 작성</a></li>
             <li><a href="/sign">로그인 및 회원 가입</a></li>
             <li><a href="/myprofile">마이페이지</a></li>
+            <li><a href="/chat">채팅</a></li>
           </ul>
         </nav>
 
