@@ -8,10 +8,10 @@
 
         <!-- =============================================================== -->
         <!-- member list -->
-        <ul class="friend-list" v-for="room in chatroom">
+        <ul class="friend-list" v-for="(room, i) in chatroom">
 
           <li class="active bounceInDown">
-            <a @dblclick="getMessage(room.id)" class="clearfix">
+            <a @dblclick="getMessage(room.id, i)" class="clearfix">
               <img :src="room.userProfileImageUrl" alt="" class="img-circle">
               <div class="friend-name">
                 <strong>{{ room.userNickname }}</strong>
@@ -29,20 +29,27 @@
       <!-- selected chat -->
       <div class="col-md-8 bg-white ">
         <div class="chat-message">
-          <ul class="chat">
+          <ul class="chat" ref="chatContainer" @scroll="handleScroll">
 
-            <div v-for="chatMessage in chatMessages" v-if="clickChatRoom">
-              <li class="clearfix" :class="chatMessage.sender===this.chatroom[currentRoomId].userId ? left : right" >
-                <div class="chat-body clearfix" :id="chatMessage.sender===this.chatroom[currentRoomId].userId ? left : right">
+            <div v-for="chatMessage in chatMessages.slice().reverse()" v-if="clickChatRoom" ref="chatMessages">
+              <li class="clearfix"
+                  :class="chatMessage.sender===this.chatroom[currentRoomIndex].userId ? left : right">
+                <div class="chat-body clearfix"
+                     :id="chatMessage.sender===this.chatroom[currentRoomIndex].userId ? left : right">
                   <div class="header">
-                    <img src="https://bootdey.com/img/Content/user_3.jpg" alt="User Avatar">
-                    <strong class="primary-font">{{chatroom[currentRoomId].userNickname}}</strong>
-                    <small class="pull-right text-muted"><i class="fa fa-clock-o">
-                    </i> 12 mins ago</small>
+                    <img :src="chatroom[currentRoomIndex].userProfileImageUrl"
+                         v-if="chatMessage.sender===this.chatroom[currentRoomIndex].userId"
+                         alt="User Avatar">
+                    <strong v-if="chatMessage.sender===this.chatroom[currentRoomIndex].userId"
+                            class="primary-font">{{
+                        chatroom[currentRoomIndex].userNickname
+                      }}</strong>
+                    <small class="pull-right text-muted">
+                      <i class="fa fa-clock-o"></i>
+                      {{ new Date(chatMessage.createdAt).toLocaleString() }}
+                    </small>
                   </div>
-                  <p>
-                    {{ chatMessage.message }}
-                  </p>
+                  <p>{{ chatMessage.message }}</p>
                 </div>
               </li>
             </div>
@@ -52,28 +59,37 @@
 
         <div class="chat-box bg-white">
           <div class="input-group">
-            <input class="form-control border no-shadow no-rounded"
+            <input @keydown.enter="send(this.chatroom[currentRoomIndex].id)"
+                   v-model="this.message" class="form-control border no-shadow no-rounded"
                    placeholder="Type your message here">
             <span class="input-group-btn">
-            			<button class="btn btn-success no-rounded" type="button">Send</button>
+            			<button @click="send(this.chatroom[currentRoomIndex].id)"
+                          class="btn btn-success no-rounded" type="button">Send</button>
             		</span>
           </div><!-- /input-group -->
         </div>
       </div>
+
     </div>
   </div>
 </template>
 
 <script>
-import {getChatRoom, getChatMessage} from "@/api/chat"
+import {getChatMessage, getChatRoom} from "@/api/chat"
+import Stomp from 'webstomp-client'
+import SockJS from 'sockjs-client'
+import {useCookies} from "vue3-cookies";
 
 export default {
   data() {
     return {
       left: "left",
       right: "right",
+      currentRoomIndex: "",
       currentRoomId: "",
       clickChatRoom: false,
+      message: "",
+      update: true,
       chatroom: {
         id: "",
         userId: "",
@@ -89,6 +105,20 @@ export default {
         createdAt: "",
         read: false
       },
+      moreChatMessages: {
+        id: "",
+        chattingRoomId: "",
+        sender: "",
+        message: "",
+        createdAt: "",
+        read: false
+      },
+      page: {
+        last: "",
+        totalPages: "",
+        numberOfElements: "",
+        number: "",
+      }
 
     }
   },
@@ -96,30 +126,131 @@ export default {
     getChatRoom() {
       getChatRoom()
       .then((res) => {
-        console.log(res.data.content)
         this.chatroom = res.data.content
       })
       .catch((err) => {
         console.error(err)
       })
     },
-    getMessage(chatroomId) {
-      this.currentRoomId = chatroomId
-      getChatMessage(chatroomId)
+    getMessage(chatroomId, i) {
+      console.log("getMessage 진입")
+
+      this.currentRoomIndex = i
+      this.currentRoomId = this.chatroom[i].id
+      getChatMessage(chatroomId, 0)
       .then((res) => {
-        console.log(res.data.content)
+        console.log("getMessage", res.data)
+        console.log("chatroomId", chatroomId, i)
         this.chatMessages = res.data.content
+        this.page = res.data
+        console.log(this.page)
         this.clickChatRoom = true
+        this.connect(chatroomId)
       })
       .catch((err) => {
         console.error(err)
       })
-    }
-  },
-  mounted() {
-    this.getChatRoom()
-  }
+    },
+    connect(chatroomId) {
+      const serverURL = "http://localhost:8080/ws"
+      let socket = new SockJS(serverURL);
+      this.stompClient = Stomp.over(socket);
+      console.log(`소켓 연결을 시도합니다. 서버 주소: ${serverURL}`)
 
+      this.stompClient.connect(
+          {
+            "Authorization": useCookies().cookies.get("accessToken")
+          },
+          frame => {
+            this.connected = true;
+            console.log('소켓 연결 성공', frame);
+            this.stompClient.subscribe("/sub/chattingroom/" + chatroomId,
+                res => {
+                  this.chatMessages.unshift(JSON.parse(res.body))
+                  this.update = !this.update;
+                });
+          },
+          error => {
+            console.log('소켓 연결 실패', error);
+            this.connected = false;
+          }
+      );
+    },
+    send(chatroomId) {
+      if (this.stompClient && this.stompClient.connected) {
+        const msg = {
+          chattingRoomId: chatroomId,
+          message: this.message,
+        };
+        this.message = ""
+        this.stompClient.send("/pub/chattingroom/" + chatroomId, JSON.stringify(msg), {});
+      }
+    },
+    scrollToBottom() {
+      const chatContainer = this.$refs.chatContainer;
+      chatContainer.scrollTop = chatContainer.scrollHeight;
+    },
+    scrollTo(index) {
+      const chatContainer = this.$refs.chatContainer;
+      const chatMessages = this.$refs.chatMessages; // chatMessages 엘리먼트에 ref를 지정하세요.
+
+      // 각 요소의 높이를 고려하여 스크롤 위치를 계산합니다.
+      let scrollPosition = 0;
+      for (let i = 0; i < index; i++) {
+        const targetElement = chatMessages[i];
+        scrollPosition += targetElement.clientHeight;
+      }
+
+      chatContainer.scrollTop = scrollPosition;
+    },
+    handleScroll() {
+      console.log("handleScroll")
+      const chatContainer = this.$refs.chatContainer;
+
+      console.log(chatContainer.scrollTop)
+      if (chatContainer.scrollTop === 0) {
+        console.log("스크롤이 맨 위로 이동했습니다.");
+        this.getMoreMessage();
+      }
+    },
+    getMoreMessage() {
+      if (!this.page.last) {
+        getChatMessage(this.currentRoomId, ++this.page.number)
+        .then((res) => {
+          console.log(this.currentRoomId, this.page.number)
+          this.chatMessages.push(...(res.data.content))
+
+          console.log("page", res.data)
+          this.page = res.data
+
+          this.$nextTick(() => {
+            this.scrollTo(this.page.numberOfElements)
+            console.info(this.page.numberOfElements)
+          })
+        })
+        .catch((err) => {
+          console.error(err)
+        })
+      }
+      console.log("마지막 페이지")
+    },
+
+  },
+  created() {
+    this.getChatRoom()
+  },
+  watch: {
+    chatMessages() {
+      this.$nextTick(() => {
+        this.scrollToBottom();
+      });
+    },
+    update() {
+      this.$nextTick(() => {
+        this.scrollToBottom();
+      });
+    },
+  },
 }
 
 </script>
@@ -228,7 +359,6 @@ small, .small {
 .chat-message {
   padding: 60px 20px 115px;
 }
-
 
 
 /* 스크롤바 스타일 (선택 사항) */
@@ -351,5 +481,3 @@ a:hover, a:active, a:focus {
   text-decoration: none;
   outline: 0;
 }</style>
-<script setup>
-</script>

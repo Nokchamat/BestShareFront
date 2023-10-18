@@ -19,9 +19,13 @@
                   <div>
                     <div>닉네임 : {{ profile.nickname }}</div>
                     <div>
-                      <font-awesome-icon :icon="['far', 'user']" />
+                      <font-awesome-icon :icon="['far', 'user']"/>
                       : {{ profile.followerCount }}
-                      <button type="button" @click="followButton" style="font-size: 10px">팔로우</button>
+                      <button type="button" @click="followButton" id="icon-button">팔로우</button>
+                    </div>
+                    <div>
+                      <font-awesome-icon :icon="['far', 'comments'] "/>
+                      <button type="button" @click="createChatRoom" id="icon-button">채팅</button>
                     </div>
                   </div>
                 </div>
@@ -119,6 +123,7 @@ import Header from "@/components/layout/Header.vue";
 import pageShareBoard from "@/views/PageShareBoard.vue";
 import {getProfileByUserId, addFollow, deleteFollow} from "@/api/user";
 import {getAllListByUserId} from "@/api/pageShareBoard";
+import {createChatRoom} from "@/api/chat";
 
 import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
 
@@ -186,6 +191,18 @@ export default {
           console.error(error)
         })
       }
+    },
+    createChatRoom() {
+      createChatRoom(this.profile.id)
+      .then(() => {
+        this.$router.push("/chat")
+      })
+      .catch((err) => {
+        console.error(err.response.data)
+        if (err.response.data.code === "ALREADY_EXIST_CHATTINGROOM") {
+          this.$router.push("/chat")
+        }
+      })
     }
   },
   mounted() {
@@ -193,3 +210,10 @@ export default {
   }
 }
 </script>
+
+<style>
+#icon-button {
+  font-size: 10px;
+}
+
+</style>

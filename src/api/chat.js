@@ -4,6 +4,11 @@ export function getChatRoom() {
   return apiInstance.get("/chattingroom")
 }
 
-export function getChatMessage(chatroomId) {
-  return apiInstance.get("/chattingroom/" + chatroomId)
+export function createChatRoom(userId) {
+  return apiInstance.post("/user/" + userId + "/chattingroom")
 }
+
+export function getChatMessage(chatroomId, page) {
+  return apiInstance.get("/chattingroom/" + chatroomId + "?sort=createdAt,desc&page=" + page)
+}
+
