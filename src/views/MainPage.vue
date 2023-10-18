@@ -40,6 +40,7 @@
     <div id="features-wrapper">
       <div class="container">
         <div class="row">
+          <h2>속지 공유 게시판</h2>
           <div class="col-4 col-12-medium" v-for="item in pageList">
 
             <!-- Box -->

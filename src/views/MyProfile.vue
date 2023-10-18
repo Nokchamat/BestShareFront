@@ -13,9 +13,9 @@
               <section>
                 <div class="profile-top">
                   <h3>마이 프로필</h3>
-                  <a href="">
-                    <font-awesome-icon icon="pen-to-square" style="height: 24px"/>
-                  </a>
+<!--                  <a href="">-->
+<!--                    <font-awesome-icon icon="pen-to-square" style="height: 24px"/>-->
+<!--                  </a>-->
                 </div>
                 <div class="profile-bottom">
                   <img :src=profile.profileImageUrl id="profileImage" alt="프로필 이미지"/>
