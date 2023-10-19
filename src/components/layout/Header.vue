@@ -18,7 +18,8 @@
           <ul>
             <li class="current"><a href="/">Home</a></li>
             <li><a href="/add-pageshareboard">게시글 작성</a></li>
-            <li><a href="/sign">로그인 및 회원 가입</a></li>
+            <li><a href="/sign" v-if="!isLogin">로그인 및 회원 가입</a></li>
+            <li><a @click="logout" v-if="isLogin" >로그아웃</a></li>
             <li><a href="/myprofile">마이페이지</a></li>
             <li><a href="/chat">채팅</a></li>
           </ul>
@@ -33,12 +34,23 @@
 <style scoped src="@/assets/template/assets/css/main.css"/>
 
 <script>
+import {useCookies} from "vue3-cookies";
+
 export default {
   data() {
     return {
-      menuOn: false
+      isLogin: false
     }
   },
-  methods: {},
+  methods: {
+    logout() {
+      useCookies().cookies.remove("accessToken")
+      this.isLogin = false
+      this.$router.push("/")
+    }
+  },
+  mounted() {
+    this.isLogin = useCookies().cookies.get("accessToken") !== null;
+  }
 };
 </script>
