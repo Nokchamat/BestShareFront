@@ -24,7 +24,7 @@
             <p> 좋아요 여부 {{ page.isLikes }}</p>
             <p> 생성일 {{ page.createdAt }}</p>
           </div>
-          <p style="clear: both"> {{ page.explains }}</p>
+          <p style="clear: both" v-html="page.explains"></p>
 
         </article>
 
