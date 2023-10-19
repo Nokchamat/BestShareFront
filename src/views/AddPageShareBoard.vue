@@ -7,10 +7,29 @@
         <input v-model="title" type="text" id="postTitle" placeholder="게시물 제목" required>
       </div>
 
+
       <div class="form-group">
-        <label for="postContent">내용</label>
-        <textarea v-model="explains" id="postContent" rows="4" placeholder="게시물 내용" required></textarea>
+        <div>
+          <label for="postContent" style="float: left; padding-right: 10px;">내용</label>
+          <input @input="uploadImageFile" type="file" accept="image/*">
+        </div>
+
+        <div id="postContent"
+             :contenteditable="true"
+             @input="handleContent"
+             style="border: 1px solid #ccc; border-radius: 4px;">
+          <img v-for="img in this.img" :src=img />
+        </div>
       </div>
+
+      <div> -----------------</div>
+      <div>
+        <div id="postContent"
+             v-html="explains"
+             style="border: 1px solid #ccc; border-radius: 4px;">
+        </div>
+      </div>
+
 
       <div class="form-group">
         <label for="thumbnail">썸네일 (이미지 파일):</label>
@@ -29,14 +48,17 @@
 
 <script>
 import {addPageShareBoard} from '@/api/pageShareBoard'
+import { uploadImage, deleteUploadImage } from "@/api/upload";
 
 export default {
   data() {
     return {
       title: '',
       explains: '',
+      deleteExplains: '',
       thumbnailFile: null,
       pdfFile: null,
+      img: []
     };
   },
   methods: {
@@ -58,6 +80,25 @@ export default {
     },
     handlePDFChange(event) {
       this.pdfFile = event.target.files[0];
+    },
+    handleContent(event) {
+      this.explains = event.target.innerHTML
+    },
+    uploadImageFile(event) {
+      uploadImage(event.target.files[0])
+      .then((res) => {
+        this.img.push(res.data)
+      })
+      .catch((err) => {
+        console.error(err)
+      })
+    },
+    deleteUploadImageFile() {
+      deleteUploadImage()
+      .then()
+      .catch((err) => {
+        console.error(err)
+      })
     }
   }
 };
@@ -97,9 +138,8 @@ label {
   color: #007BFF;
 }
 
-input[type="text"],
 textarea,
-input[type="file"] {
+#thumbnail, #pdfFile {
   width: 100%;
   padding: 12px;
   border: 1px solid #ccc;

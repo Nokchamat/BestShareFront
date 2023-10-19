@@ -59,7 +59,7 @@
 
         <div class="chat-box bg-white">
           <div class="input-group">
-            <input @keydown.enter="send(this.chatroom[currentRoomIndex].id)"
+            <input @keyup.enter="send(this.chatroom[currentRoomIndex].id)"
                    v-model="this.message" class="form-control border no-shadow no-rounded"
                    placeholder="Type your message here">
             <span class="input-group-btn">
@@ -177,7 +177,7 @@ export default {
       );
     },
     send(chatroomId) {
-      if (this.stompClient && this.stompClient.connected) {
+      if (this.stompClient && this.stompClient.connected && this.message !== "") {
         const msg = {
           chattingRoomId: chatroomId,
           message: this.message,
@@ -204,9 +204,7 @@ export default {
       chatContainer.scrollTop = scrollPosition;
     },
     handleScroll() {
-      console.log("handleScroll")
       const chatContainer = this.$refs.chatContainer;
-
       console.log(chatContainer.scrollTop)
       if (chatContainer.scrollTop === 0) {
         console.log("스크롤이 맨 위로 이동했습니다.");
