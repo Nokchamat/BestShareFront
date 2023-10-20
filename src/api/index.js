@@ -3,7 +3,7 @@ import {useCookies} from "vue3-cookies";
 import router from "@/router";
 
 const apiInstance = axios.create({
-  baseURL: 'http://localhost:8080/v1',
+  baseURL: 'http://43.202.192.20:8080/v1',
 });
 
 apiInstance.interceptors.request.use(
