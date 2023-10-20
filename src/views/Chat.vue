@@ -78,7 +78,7 @@
 import {getChatMessage, getChatRoom} from "@/api/chat"
 import Stomp from 'webstomp-client'
 import SockJS from 'sockjs-client'
-import {useCookies} from "vue3-cookies";
+import store from "@/store";
 
 export default {
   data() {
@@ -159,7 +159,7 @@ export default {
 
       this.stompClient.connect(
           {
-            "Authorization": useCookies().cookies.get("accessToken")
+            "Authorization": store.state.accessToken
           },
           frame => {
             this.connected = true;

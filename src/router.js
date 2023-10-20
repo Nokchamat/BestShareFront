@@ -10,8 +10,9 @@ import Chat from "@/views/Chat.vue";
 const routes = [
   {
     path: "/",
-    component: Home
+    component: Home,
   },
+
   {
     path: "/pageshareboard/:id",
     component: PageShareBoard
