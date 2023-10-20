@@ -118,7 +118,6 @@
 import pageShareBoard from "@/views/PageShareBoard.vue";
 import Modal from "@/views/Modal.vue";
 import {postSignIn, postSignUp} from '@/api/sign'
-import {useCookies} from "vue3-cookies";
 
 export default {
   computed: {
@@ -167,7 +166,7 @@ export default {
         password: this.sign.password
       })
       .then(res => {
-        useCookies().cookies.set('accessToken', res.headers.get('Authorization'))
+        this.$store.dispatch('login', { accessToken: res.headers.get('Authorization')})
         this.$router.push("/")
       }).catch(err => {
         console.log(err.response.data.message);
@@ -204,8 +203,6 @@ export default {
       console.log("uploadImage")
       this.profileImage = this.$refs.profileImage.files[0]
       this.onFileSelected()
-
-      console.log("file", new File(new Empty(), ""))
     },
     onFileSelected() {
       const reader = new FileReader();

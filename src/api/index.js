@@ -1,6 +1,6 @@
 import axios from "axios";
-import {useCookies} from "vue3-cookies";
 import router from "@/router";
+import store from "@/store";
 
 const apiInstance = axios.create({
   baseURL: 'http://43.202.192.20:8080/v1',
@@ -8,7 +8,8 @@ const apiInstance = axios.create({
 
 apiInstance.interceptors.request.use(
     (config) => {
-      config.headers.Authorization = useCookies().cookies.get('accessToken')
+      config.headers.Authorization = store.state.accessToken
+
       return config
     },
     (error) => {
@@ -28,9 +29,9 @@ apiInstance.interceptors.response.use(
       switch (error.response.status) {
         case 403:
           console.error(error.response.status + " 에러 발생")
-          useCookies().cookies.remove('accessToken')
-          router.push("/sign")
           alert("로그인이 필요합니다.")
+          router.push("/sign")
+          this.$store.dispatch('logout')
       }
 
       return Promise.reject(error)

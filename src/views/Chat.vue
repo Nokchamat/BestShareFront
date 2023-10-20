@@ -78,7 +78,7 @@
 import {getChatMessage, getChatRoom} from "@/api/chat"
 import Stomp from 'webstomp-client'
 import SockJS from 'sockjs-client'
-import {useCookies} from "vue3-cookies";
+import store from "@/store";
 
 export default {
   data() {
@@ -152,14 +152,14 @@ export default {
       })
     },
     connect(chatroomId) {
-      const serverURL = "http://localhost:8080/ws"
+      const serverURL = "http://43.202.192.20:8080/ws"
       let socket = new SockJS(serverURL);
       this.stompClient = Stomp.over(socket);
       console.log(`소켓 연결을 시도합니다. 서버 주소: ${serverURL}`)
 
       this.stompClient.connect(
           {
-            "Authorization": useCookies().cookies.get("accessToken")
+            "Authorization": store.state.accessToken
           },
           frame => {
             this.connected = true;
