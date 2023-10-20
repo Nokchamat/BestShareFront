@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <h1>게시물 작성</h1>
-    <form class="post-form">
+    <form @submit.prevent="submitPost" class="post-form">
       <div class="form-group">
         <label for="postTitle">제목</label>
         <input v-model="title" type="text" id="postTitle" placeholder="게시물 제목" required>
@@ -61,16 +61,17 @@ export default {
   },
   methods: {
     submitPost() {
+      console.log("게시물 생성")
       addPageShareBoard({
         title: this.title,
         explains: this.explains
       }, this.thumbnailFile, this.pdfFile)
-      .then(() => {
+      .then((res) => {
         alert("게시물이 작성됐습니다.")
         this.$router.push("/")
       })
       .catch((err) => {
-        console.error(err)
+        console.error("err", err)
       })
     },
     handleThumbnailChange(event) {
