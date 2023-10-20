@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <h1>게시물 작성</h1>
-    <form @submit.prevent="submitPost" class="post-form">
+    <form class="post-form">
       <div class="form-group">
         <label for="postTitle">제목</label>
         <input v-model="title" type="text" id="postTitle" placeholder="게시물 제목" required>
@@ -10,16 +10,22 @@
 
       <div class="form-group">
         <div>
-          <label for="postContent" style="float: left; padding-right: 10px;">내용</label>
-          <input @input="uploadImageFile" type="file" accept="image/*">
+          <label for="postContent" style="float: left; padding-right: 20px">내용</label>
+
+            <label for="explainsImage" >
+              <font-awesome-icon :icon="['far', 'image']" />
+              <span style="margin-left: 1px"> 사진 첨부 </span>
+            </label>
+            <input @input="uploadImageFile" type="file" accept="image/*" id="explainsImage" hidden="hidden"/>
+
+          <div id="postContent"
+               :contenteditable="true"
+               @input="handleContent"
+               style="border: 1px solid #ccc; border-radius: 4px;">
+            <img v-for="img in this.img" :src=img />
+          </div>
         </div>
 
-        <div id="postContent"
-             :contenteditable="true"
-             @input="handleContent"
-             style="border: 1px solid #ccc; border-radius: 4px;">
-          <img v-for="img in this.img" :src=img />
-        </div>
       </div>
 
 
@@ -131,12 +137,21 @@ label {
 }
 
 textarea,
-#thumbnail, #pdfFile {
+#thumbnail, #pdfFile, #postTitle {
   width: 100%;
   padding: 12px;
   border: 1px solid #ccc;
   border-radius: 4px;
   font-size: 16px;
+}
+
+#postContent {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 16px;
+  height: 150px;
 }
 
 button.submit-button {
