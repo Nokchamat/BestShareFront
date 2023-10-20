@@ -46,11 +46,16 @@
                v-bind:class="{'repeat__password': selectBlock}" class="input" id="phone__number"/>
       </div>
       <!-- profileImage input -->
-      <div class="input__block">
+      <div class="input__block" v-if="!selectBlock">
+        <label for="profile_image" id="profileImageLabel">
+          <img id="profileImage" style="margin-right: auto;" :src="profileImagePreview" alt="프로필"/>
+          <span style="margin-left: 10px">{{ profilePlaceholder }}</span>
+        </label>
         <input multiple type="file" @change="uploadImage" ref="profileImage"
                v-bind:class="{'repeat__password': selectBlock}"
-               class="input" id="profile_image"/>
+               class="input" id="profile_image" style="display: none"/>
       </div>
+
       <!-- sign in button -->
       <button @click="selectBlock ? postSignIn() : postSignUp()" class="signin__btn">
         {{ bottomButton }}
@@ -77,6 +82,37 @@
 </template>
 
 <style scoped src="@/assets/template/assets/sass/sign.scss"/>
+<style>
+#profile_image {
+  padding: 12px;
+}
+
+#profileImage {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  background-color: rgb(243, 243, 243);
+  overflow: hidden;
+  cursor: default;
+}
+
+#profileImageLabel {
+  display: block;
+  width: 90%;
+  max-width: 680px;
+  height: 130px;
+  margin: 0 auto;
+  border-radius: 8px;
+  border: none;
+  background: rgba(15, 19, 42, 0.1);
+  padding: 15px;
+  font-size: 14px;
+  flex: 1;
+  justify-content: space-between;
+}
+
+
+</style>
 
 <script>
 import pageShareBoard from "@/views/PageShareBoard.vue";
@@ -99,6 +135,8 @@ export default {
       title: "SIGN IN",
       bottomButton: "Sign in",
       repeatPassword: "",
+      profilePlaceholder: "해당 사진은 기본 프로필 입니다. 사진을 첨부해주세요.",
+      profileImagePreview: "https://ios-note-bucket.s3.ap-northeast-2.amazonaws.com/profile/DefaultProfile.png",
       sign: {
         email: "",
         password: "",
@@ -106,7 +144,7 @@ export default {
         nickname: "",
         phoneNumber: "",
       },
-      profileImage: new File([], ""),
+      profileImage: "",
       modalState: false,
       modalData: "",
     }
@@ -142,14 +180,14 @@ export default {
         this.modalData = "비밀번호가 일치하지 않습니다.";
         this.changeModalState()
       } else {
-        postSignUp(this.sign, this.profileImage[0])
+        postSignUp(this.sign, this.profileImage)
         .then(res => {
           console.log(JSON.stringify(res.headers.get('Authorization')))
           this.modalData = "회원가입이 완료되었습니다."
           this.changeModalState()
           this.signInButton()
         }).catch(err => {
-          console.log(err.response.data.message);
+          console.error(err.response.data.message);
           if (err.response.data.message === undefined) {
             this.modalData = err.response.data.messages.toString().replace(/,/gi, '  ')
           } else {
@@ -163,7 +201,18 @@ export default {
       this.modalState = !this.modalState
     },
     uploadImage() {
-      this.profileImage = this.$refs.profileImage.files
+      console.log("uploadImage")
+      this.profileImage = this.$refs.profileImage.files[0]
+      this.onFileSelected()
+
+      console.log("file", new File(new Empty(), ""))
+    },
+    onFileSelected() {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        this.profileImagePreview = e.target.result;
+      }
+      reader.readAsDataURL(this.profileImage);
     },
   },
 }

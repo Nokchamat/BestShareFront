@@ -22,14 +22,6 @@
         </div>
       </div>
 
-      <div> -----------------</div>
-      <div>
-        <div id="postContent"
-             v-html="explains"
-             style="border: 1px solid #ccc; border-radius: 4px;">
-        </div>
-      </div>
-
 
       <div class="form-group">
         <label for="thumbnail">썸네일 (이미지 파일):</label>
