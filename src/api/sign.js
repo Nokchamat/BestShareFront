@@ -15,8 +15,16 @@ function postSignUp(form, profileImage) {
   dataForm.append('signUpForm', new Blob([JSON.stringify(form)], {
     type: "application/json"
   }));
-  dataForm.append("profileImage", profileImage);
+  if (profileImage === "") {
+    console.log("이미지 업로드 안 함")
+    const emptyFile = new File([], "");
+    dataForm.append('profileImage', emptyFile)
+  } else {
+    console.log("이미지 업로드 함")
+    dataForm.append('profileImage', profileImage);
+  }
 
+  console.log(dataForm)
   return apiInstance.post('/user/sign-up',
       dataForm, {
         headers: {
@@ -26,4 +34,4 @@ function postSignUp(form, profileImage) {
   )
 }
 
-export { postSignIn, postSignUp }
+export {postSignIn, postSignUp}
