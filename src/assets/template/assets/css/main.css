@@ -197,7 +197,7 @@ input, select, textarea {
 	.container {
 		margin: 0 auto;
 		max-width: 100%;
-		width: 1400px;
+		width: 1200px;
 	}
 
 		@media screen and (max-width: 1680px) {
@@ -302,7 +302,7 @@ input, select, textarea {
 		}
 
 		.row > .col-4 {
-			width: 20%;
+			width: 25%;
 		}
 
 		.row > .off-4 {
@@ -545,7 +545,7 @@ input, select, textarea {
 				}
 
 				.row > .col-4-xlarge {
-					width: 20%;
+					width: 25%;
 				}
 
 				.row > .off-4-xlarge {
@@ -790,7 +790,7 @@ input, select, textarea {
 				}
 
 				.row > .col-4-large {
-					width: 20%;
+					width: 25%;
 				}
 
 				.row > .off-4-large {
@@ -1035,7 +1035,7 @@ input, select, textarea {
 				}
 
 				.row > .col-4-medium {
-					width: 20%;
+					width: 25%;
 				}
 
 				.row > .off-4-medium {
@@ -1280,7 +1280,7 @@ input, select, textarea {
 				}
 
 				.row > .col-4-small {
-					width: 20%;
+					width: 25%;
 				}
 
 				.row > .off-4-small {
