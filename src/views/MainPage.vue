@@ -72,13 +72,6 @@
 </template>
 
 <style scoped src="@/assets/template/assets/css/main.css"/>
-<style>
-img {
-  width: 260px;
-  height: 260px;
-  object-fit: cover;
-}
-</style>
 
 <script>
 import Header from "@/components/layout/Header.vue";
