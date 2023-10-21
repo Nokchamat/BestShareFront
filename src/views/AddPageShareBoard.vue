@@ -110,7 +110,7 @@ export default {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   margin: 20px auto;
   padding: 20px;
-  max-width: 600px;
+  max-width: 1200px;
 }
 
 h1 {
@@ -152,7 +152,18 @@ textarea,
   border: 1px solid #ccc;
   border-radius: 4px;
   font-size: 16px;
-  height: 150px;
+  max-height: 600px;
+  overflow-y: auto; /* 수직 스크롤바를 추가합니다. */
+}
+
+/* 스크롤바 스타일 (선택 사항) */
+#postContent::-webkit-scrollbar {
+  width: 10px; /* 스크롤바의 너비 설정 */
+}
+
+#postContent::-webkit-scrollbar-thumb {
+  background-color: #888; /* 스크롤바 색상 설정 */
+  border-radius: 5px; /* 스크롤바 모양 설정 */
 }
 
 button.submit-button {
