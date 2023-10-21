@@ -9,7 +9,6 @@ const apiInstance = axios.create({
 apiInstance.interceptors.request.use(
     (config) => {
       config.headers.Authorization = store.state.accessToken
-
       return config
     },
     (error) => {
@@ -19,6 +18,7 @@ apiInstance.interceptors.request.use(
 
 apiInstance.interceptors.response.use(
     (res) => {
+
       return res
     },
     (error) => {
@@ -29,9 +29,9 @@ apiInstance.interceptors.response.use(
       switch (error.response.status) {
         case 403:
           console.error(error.response.status + " 에러 발생")
+          store.dispatch('logout')
           alert("로그인이 필요합니다.")
           router.push("/sign")
-          this.$store.dispatch('logout')
       }
 
       return Promise.reject(error)

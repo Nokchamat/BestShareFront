@@ -118,9 +118,13 @@
 import pageShareBoard from "@/views/PageShareBoard.vue";
 import Modal from "@/views/Modal.vue";
 import {postSignIn, postSignUp} from '@/api/sign'
+import store from "../store";
 
 export default {
   computed: {
+    store() {
+      return store
+    },
     pageShareBoard() {
       return pageShareBoard
     },
