@@ -136,7 +136,7 @@ export default {
   components: {FontAwesomeIcon, Header},
   data() {
     return {
-      pageDetailLink: "pageshareboard/",
+      pageDetailLink: "/pageshareboard/",
       pageListSize: "",
       pageList: {
         id: "",
