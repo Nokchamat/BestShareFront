@@ -11,18 +11,11 @@
       <div class="form-group">
         <div>
           <label for="postContent" style="float: left; padding-right: 20px">내용</label>
-
-            <label for="explainsImage" >
-              <font-awesome-icon :icon="['far', 'image']" />
-              <span style="margin-left: 1px"> 사진 첨부 </span>
-            </label>
-            <input @input="uploadImageFile" type="file" accept="image/*" id="explainsImage" hidden="hidden"/>
-
           <div id="postContent"
                :contenteditable="true"
                @input="handleContent"
+               ref="postExplains"
                style="border: 1px solid #ccc; border-radius: 4px;">
-            <img v-for="img in this.img" :src=img />
           </div>
         </div>
 
@@ -46,7 +39,10 @@
 
 <script>
 import {addPageShareBoard} from '@/api/pageShareBoard'
-import { uploadImage, deleteUploadImage } from "@/api/upload";
+import {
+  uploadBase64Image,
+  dataURLtoFile
+} from "@/api/upload";
 
 export default {
   data() {
@@ -56,51 +52,67 @@ export default {
       deleteExplains: '',
       thumbnailFile: null,
       pdfFile: null,
-      img: []
+      contentTarget: {
+        children: "",
+        currentSrc: "",
+        innerHTML: "",
+      },
     };
   },
   methods: {
     submitPost() {
-      console.log("게시물 생성")
-      addPageShareBoard({
-        title: this.title,
-        explains: this.explains
-      }, this.thumbnailFile, this.pdfFile)
-      .then((res) => {
-        alert("게시물이 작성됐습니다.")
-        this.$router.push("/")
+      console.log("게시물 생성");
+      this.uploadExplainsImage()
+      .then(() => {
+        this.explains = this.$refs.postExplains.innerHTML
+        // 이미지 업로드가 완료된 후에 실행할 코드
+        return addPageShareBoard({
+          title: this.title,
+          explains: this.explains
+        }, this.thumbnailFile, this.pdfFile);
+      })
+      .then(() => {
+        alert("게시물이 작성됐습니다.");
+        this.$router.push("/");
       })
       .catch((err) => {
-        console.error("err", err)
-      })
+        console.error("err", err);
+      });
     },
     handleThumbnailChange(event) {
       this.thumbnailFile = event.target.files[0];
+      console.log(this.thumbnailFile)
     },
     handlePDFChange(event) {
       this.pdfFile = event.target.files[0];
     },
     handleContent(event) {
+      this.contentTarget = event.target
       this.explains = event.target.innerHTML
     },
-    uploadImageFile(event) {
-      uploadImage(event.target.files[0])
-      .then((res) => {
-        this.img.push(res.data)
-      })
-      .catch((err) => {
-        console.error(err)
-      })
+    uploadExplainsImage() {
+      console.log('uploadExplainsImage');
+      const explainsAllImg = this.contentTarget.querySelectorAll('img');
+
+      const uploadPromises = [];
+
+      for (let i = 0; i < explainsAllImg.length; i++) {
+        const uploadPromise = uploadBase64Image(dataURLtoFile(explainsAllImg[i].currentSrc, "image"))
+        .then((res) => {
+          explainsAllImg[i].src = res.data;
+        })
+        .catch((err) => {
+          console.error(err);
+        });
+
+        uploadPromises.push(uploadPromise);
+      }
+
+      // 모든 이미지 업로드 Promise를 반환
+      return Promise.all(uploadPromises);
     },
-    deleteUploadImageFile() {
-      deleteUploadImage()
-      .then()
-      .catch((err) => {
-        console.error(err)
-      })
-    }
-  }
-};
+  },
+}
 </script>
 
 <style scoped>
@@ -153,7 +165,12 @@ textarea,
   border-radius: 4px;
   font-size: 16px;
   max-height: 600px;
+  height: 600px;
   overflow-y: auto; /* 수직 스크롤바를 추가합니다. */
+
+  img {
+    width: 100%;
+  }
 }
 
 /* 스크롤바 스타일 (선택 사항) */
