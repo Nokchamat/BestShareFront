@@ -13,7 +13,12 @@ export function uploadImage(image) {
 }
 
 export function deleteUploadImage(fileKey) {
-  return apiInstance.delete("/image-upload", fileKey)
+  return apiInstance.delete("/image-upload/", {
+    data: fileKey,
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  })
 }
 
 export function uploadBase64Image(image) {

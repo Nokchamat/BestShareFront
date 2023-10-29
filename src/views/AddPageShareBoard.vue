@@ -69,15 +69,15 @@ export default {
         return addPageShareBoard({
           title: this.title,
           explains: this.explains
-        }, this.thumbnailFile, this.pdfFile);
+        }, this.thumbnailFile, this.pdfFile)
+        .then(() => {
+          alert("게시물이 작성됐습니다.");
+          this.$router.push("/");
+        })
+        .catch((err) => {
+          console.error("err", err);
+        })
       })
-      .then(() => {
-        alert("게시물이 작성됐습니다.");
-        this.$router.push("/");
-      })
-      .catch((err) => {
-        console.error("err", err);
-      });
     },
     handleThumbnailChange(event) {
       this.thumbnailFile = event.target.files[0];
