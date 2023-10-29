@@ -18,9 +18,6 @@
                style="border: 1px solid #ccc; border-radius: 4px;">
           </div>
         </div>
-        <div>
-          {{this.page.explains}}
-        </div>
 
       </div>
 
@@ -124,7 +121,7 @@ export default {
         if (!this.imgQuery[i].isExist) {
           console.log('삭제', this.imgQuery[i].currentSrc)
           deleteUploadImage({
-            fileKey: this.imgQuery[i].currentSrc
+            uploadedFileUrl: this.imgQuery[i].currentSrc
           })
           .then((res)=>{
             console.log('이미지 삭제', res)

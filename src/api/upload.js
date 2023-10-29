@@ -12,9 +12,9 @@ export function uploadImage(image) {
   )
 }
 
-export function deleteUploadImage(fileKey) {
+export function deleteUploadImage(uploadedFileUrl) {
   return apiInstance.delete("/image-upload/", {
-    data: fileKey,
+    data: uploadedFileUrl,
     headers: {
       'Content-Type': 'application/json'
     }
