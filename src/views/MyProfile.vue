@@ -63,7 +63,7 @@
                               </div>
                               <div class="button-container">
                                 <button @click="updatePageShareBoard(item.id)" id="updateButton">수정</button>
-                                <button id="deleteButton">삭제</button>
+                                <button @click="deletePageShareBoard(item.id)" id="deleteButton">삭제</button>
                               </div>
                             </header>
                           </div>
@@ -82,6 +82,12 @@
       </div>
     </div>
 
+  </div>
+
+  <div id="postContent"
+       :contenteditable="true"
+       ref="postExplains"
+       hidden="hidden">
   </div>
 
 </template>
@@ -139,9 +145,15 @@ div .profile-bottom {
 import Header from "@/components/layout/Header.vue";
 import pageShareBoard from "@/views/PageShareBoard.vue";
 import {getMyProfile} from "@/api/user";
-import {getAllListByUserId} from "@/api/pageShareBoard";
+import {
+  deletePageShareBoard,
+  getAllListByUserId,
+  getDetail,
+  updatePageShareBoard
+} from "@/api/pageShareBoard";
 
 import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
+import {deleteUploadImage} from "@/api/upload";
 
 export default {
   computed: {
@@ -174,7 +186,7 @@ export default {
   },
   methods: {
     init() {
-      var userId;
+      let userId;
 
       getMyProfile()
       .then((res) => {
@@ -196,7 +208,50 @@ export default {
     },
     updatePageShareBoard(id) {
       this.$router.push("/update-pageshareboard/" + id)
-    }
+    },
+    deletePageShareBoard(id) {
+      this.deleteExplainsImage(id)
+
+      deletePageShareBoard(id)
+      .then(()=> {
+        alert("삭제가 완료됐습니다.")
+        this.init()
+      })
+      .catch((err)=> {
+        console.log(err)
+      })
+    },
+    async deleteExplainsImage(id) {
+      let imgQuery;
+
+      await getDetail(id)
+      .then((res) => {
+        this.$refs.postExplains.innerHTML = res.data.explains;
+        imgQuery = this.$refs.postExplains.querySelectorAll('img');
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+      console.log('getDetail 완료', imgQuery)
+
+      console.log(imgQuery.length + "개 이미지 삭제 시작")
+      for (let i = 0; i < imgQuery.length; i++) {
+        console.log(imgQuery)
+
+        console.log('삭제 시작 : ' + i + "번째 이미지 : " + imgQuery[i].src)
+        deleteUploadImage({
+          uploadedFileUrl: imgQuery[i].src
+        })
+        .then(() => {
+          console.log('삭제 완료 : ' + i + "번째 이미지 : " + imgQuery[i].src)
+        })
+        .catch((err) => {
+          console.error(err)
+        })
+      }
+      console.log(imgQuery.length + "개 이미지 삭제 완료")
+
+    },
   },
   mounted() {
     this.init();

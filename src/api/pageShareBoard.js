@@ -50,6 +50,10 @@ function updatePageShareBoard(form, thumbnail, pagePDF, pageShareBoardId) {
   )
 }
 
+function deletePageShareBoard(id) {
+  return apiInstance.delete("/pageshareboard/" + id)
+}
+
 function addLikes(id) {
   return apiInstance.post("/pageshareboard/" + id + "/likes")
 }
@@ -61,5 +65,5 @@ function deleteLikes(likesId) {
 export {
   getAllList, getDetail, addLikes, deleteLikes,
   getAllListByUserId, getBestPageList, addPageShareBoard
-    , updatePageShareBoard
+    , updatePageShareBoard, deletePageShareBoard
 }
