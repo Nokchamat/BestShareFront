@@ -61,6 +61,10 @@
                                 <font-awesome-icon :icon="['fas', 'heart']"/>
                                 {{ item.likesCount }}
                               </div>
+                              <div class="button-container">
+                                <button @click="updatePageShareBoard(item.id)" id="updateButton">수정</button>
+                                <button id="deleteButton">삭제</button>
+                              </div>
                             </header>
                           </div>
                         </section>
@@ -84,6 +88,18 @@
 
 <style scoped src="@/assets/template/assets/css/main.css"/>
 <style>
+div .button-container {
+  display: flex;
+  justify-content: center
+}
+
+
+#deleteButton, #updateButton {
+  margin-right: 5px;
+  display: inline-block;
+  font-size: 16px;
+}
+
 input {
   border: none;
   font: inherit;
@@ -178,6 +194,9 @@ export default {
         console.log(error);
       })
     },
+    updatePageShareBoard(id) {
+      this.$router.push("/update-pageshareboard/" + id)
+    }
   },
   mounted() {
     this.init();

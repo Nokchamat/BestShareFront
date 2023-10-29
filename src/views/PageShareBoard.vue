@@ -3,7 +3,7 @@
     <div class="container">
       <div id="content">
         <article>
-          <img :src=page.thumbnailUrl alt="" >
+          <img :src=page.thumbnailUrl alt="" id="page-top-img">
           <div id="page-top">
             <h2 style="padding-right: 30px">{{ page.title }}</h2>
 
@@ -107,13 +107,13 @@ h2 {
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
 }
 
-#page-top img {
+#page-top-img {
   width: 50%;
   height: auto;
   display: block;
   margin: 0 auto;
-  border: 2px solid #ddd;
   border-radius: 5px;
+  padding-bottom: 10px;
 }
 
 .page-info {

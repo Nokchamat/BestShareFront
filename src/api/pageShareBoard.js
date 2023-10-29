@@ -33,6 +33,23 @@ function addPageShareBoard(form, thumbnail, pagePDF) {
   )
 }
 
+function updatePageShareBoard(form, thumbnail, pagePDF, pageShareBoardId) {
+  const dataForm = new FormData();
+  dataForm.append('updatePageShareBoardForm', new Blob([JSON.stringify(form)], {
+    type: "application/json"
+  }));
+  dataForm.append("thumbnail", thumbnail);
+  dataForm.append("pagePDF", pagePDF);
+
+  return apiInstance.put("/pageshareboard/" + pageShareBoardId,
+      dataForm, {
+        headers: {
+          'content-type': 'multipart/form-data',
+        }
+      }
+  )
+}
+
 function addLikes(id) {
   return apiInstance.post("/pageshareboard/" + id + "/likes")
 }
@@ -44,4 +61,5 @@ function deleteLikes(likesId) {
 export {
   getAllList, getDetail, addLikes, deleteLikes,
   getAllListByUserId, getBestPageList, addPageShareBoard
+    , updatePageShareBoard
 }
