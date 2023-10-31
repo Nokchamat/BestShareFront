@@ -16,4 +16,23 @@ function deleteFollow(followId) {
   return apiInstance.delete("/follow/" + followId)
 }
 
-export { getMyProfile, getProfileByUserId, addFollow, deleteFollow}
+function updateProfileImage(profileImage) {
+  const data = new FormData()
+  data.append("profileImage", profileImage)
+
+  return apiInstance.put("/user/profile",
+      data, {
+        headers: {
+          'content-type': 'multipart/form-data',
+        }
+      }
+  )
+}
+
+export {
+  getMyProfile,
+  getProfileByUserId,
+  addFollow,
+  deleteFollow,
+  updateProfileImage
+}
