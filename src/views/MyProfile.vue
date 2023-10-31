@@ -13,9 +13,12 @@
               <section>
                 <div class="profile-top">
                   <h3>마이 프로필</h3>
-<!--                  <a href="">-->
-<!--                    <font-awesome-icon icon="pen-to-square" style="height: 24px"/>-->
-<!--                  </a>-->
+                  <div>
+                    <font-awesome-icon icon="pen-to-square" style="height: 24px" type="button" @click="selectFile" />
+                    <input type="file" ref="fileInput"
+                    style="display: none"
+                    @change="handleFileSelected"/>
+                  </div>
                 </div>
                 <div class="profile-bottom">
                   <img :src=profile.profileImageUrl id="profileImage" alt="프로필 이미지"/>
@@ -144,7 +147,7 @@ div .profile-bottom {
 <script>
 import Header from "@/components/layout/Header.vue";
 import pageShareBoard from "@/views/PageShareBoard.vue";
-import {getMyProfile} from "@/api/user";
+import {getMyProfile, updateProfileImage} from "@/api/user";
 import {
   deletePageShareBoard,
   getAllListByUserId,
@@ -250,7 +253,20 @@ export default {
         })
       }
       console.log(imgQuery.length + "개 이미지 삭제 완료")
+    },
+    selectFile() {
+      this.$refs.fileInput.click();
+    },
+    handleFileSelected() {
+      const fileInput = this.$refs.fileInput;
 
+      updateProfileImage(fileInput.files[0])
+      .then(() => {
+        this.init()
+      })
+      .catch((err) => {
+        console.log(err)
+      })
     },
   },
   mounted() {
