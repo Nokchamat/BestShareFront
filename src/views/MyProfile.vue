@@ -34,12 +34,14 @@
                   </div>
                 </div>
               </section>
-
             </div>
           </div>
           <div class="col-8 col-12-medium imp-medium">
+            <div style="margin-bottom: 5px">
+              <button @click="createPageButton" style="margin-right: 5px">작성한 게시물</button>
+              <button @click="likesPageButton" >좋아요 게시물</button>
+            </div>
             <div id="content">
-
               <!-- Content -->
               <h3> 작성한 게시물 : {{ pageListSize }}</h3>
               <article>
@@ -50,7 +52,8 @@
 
                         <!-- Box -->
                         <section class="box feature">
-                          <a :href="pageDetailLink+item.id" class="image featured">
+                          <a :href="isCreatePage ? pageDetailLink+item.id :
+                          pageDetailLink + item.pageShareBoardId" class="image featured">
                             <img :src=item.thumbnailUrl alt=""/>
                           </a>
                           <div class="inner">
@@ -65,8 +68,8 @@
                                 {{ item.likesCount }}
                               </div>
                               <div class="button-container">
-                                <button @click="updatePageShareBoard(item.id)" id="updateButton">수정</button>
-                                <button @click="deletePageShareBoard(item.id)" id="deleteButton">삭제</button>
+                                <button v-if="isCreatePage" @click="updatePageShareBoard(item.id)" id="updateButton">수정</button>
+                                <button v-if="isCreatePage" @click="deletePageShareBoard(item.id)" id="deleteButton">삭제</button>
                               </div>
                             </header>
                           </div>
@@ -152,7 +155,7 @@ import {
   deletePageShareBoard,
   getAllListByUserId,
   getDetail,
-  updatePageShareBoard
+  getLikes
 } from "@/api/pageShareBoard";
 
 import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
@@ -167,6 +170,7 @@ export default {
   components: {FontAwesomeIcon, Header},
   data() {
     return {
+      isCreatePage: true,
       pageDetailLink: "pageshareboard/",
       pageListSize: "",
       pageList: {
@@ -174,7 +178,8 @@ export default {
         title: "",
         thumbnailUrl: "",
         viewCount: "",
-        likesCount: ""
+        likesCount: "",
+        pageShareBoardId: "",
       },
       profile: {
         id: "",
@@ -266,6 +271,20 @@ export default {
       })
       .catch((err) => {
         console.log(err)
+      })
+    },
+    createPageButton() {
+      this.init()
+      this.isCreatePage = true;
+    },
+    likesPageButton() {
+      getLikes()
+      .then((res) => {
+        this.pageList = res.data.content;
+        this.isCreatePage = false;
+      })
+      .catch((err) => {
+        console.error(err)
       })
     },
   },
