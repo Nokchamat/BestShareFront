@@ -62,8 +62,12 @@ function deleteLikes(likesId) {
   return apiInstance.delete("/likes/" + likesId)
 }
 
+function getLikes() {
+  return apiInstance.get("/likes")
+}
+
 export {
   getAllList, getDetail, addLikes, deleteLikes,
   getAllListByUserId, getBestPageList, addPageShareBoard
-    , updatePageShareBoard, deletePageShareBoard
+    , updatePageShareBoard, deletePageShareBoard, getLikes
 }
