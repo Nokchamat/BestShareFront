@@ -3,7 +3,7 @@ import router from "@/router";
 import store from "@/store";
 
 const apiInstance = axios.create({
-  baseURL: 'http://localhost:8080/v1',
+    baseURL: 'https://bestshare.store/v1',
 });
 
 apiInstance.interceptors.request.use(
