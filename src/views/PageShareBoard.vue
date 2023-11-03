@@ -141,6 +141,7 @@ a {
 <script>
 import {addLikes, deleteLikes, getDetail} from "@/api/pageShareBoard";
 import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
+import store from "@/store";
 
 export default {
   components: {FontAwesomeIcon},
@@ -200,7 +201,11 @@ export default {
       }
     },
     toPDF() {
-      window.open(this.page.pagePdfFileKey);
+      if (!store.state.isVerifyEmail) {
+        alert('가입 시 이메일로 발송된 인증 코드로 마이페이지에서 이메일 인증을 해주세요.')
+      } else {
+        window.open(this.page.pagePdfFileKey);
+      }
     }
   },
   mounted() {
