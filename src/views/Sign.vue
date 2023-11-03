@@ -119,6 +119,7 @@ import pageShareBoard from "@/views/PageShareBoard.vue";
 import Modal from "@/views/Modal.vue";
 import {postSignIn, postSignUp} from '@/api/sign'
 import store from "../store";
+import {getVerifyEmail} from "@/api/user";
 
 export default {
   computed: {
@@ -172,6 +173,13 @@ export default {
       .then(res => {
         this.$store.dispatch('login', { accessToken: res.headers.get('Authorization')})
         this.$router.push("/")
+        getVerifyEmail()
+        .then((res) => {
+          this.$store.dispatch('checkEmailVerify', { isVerifyEmail: res.data})
+        })
+        .catch((err) => {
+          console.error('이메일 인증 필요', err)
+        })
       }).catch(err => {
         console.log(err.response.data.message);
         this.modalData = err.response.data.message
@@ -186,7 +194,7 @@ export default {
         postSignUp(this.sign, this.profileImage)
         .then(res => {
           console.log(JSON.stringify(res.headers.get('Authorization')))
-          this.modalData = "회원가입이 완료되었습니다."
+          this.modalData = "회원가입이 완료되었습니다. 이메일로 인증 코드가 발송됐습니다. 마이페이지에서 이메일 인증해주세요."
           this.changeModalState()
           this.signInButton()
         }).catch(err => {

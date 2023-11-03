@@ -29,10 +29,20 @@ function updateProfileImage(profileImage) {
   )
 }
 
+function getVerifyEmail() {
+  return apiInstance.get("/user/verify")
+}
+
+function postVerifyEmail(code) {
+  return apiInstance.post("/user/verify/" + code)
+}
+
 export {
   getMyProfile,
   getProfileByUserId,
   addFollow,
   deleteFollow,
-  updateProfileImage
+  updateProfileImage,
+  getVerifyEmail,
+  postVerifyEmail
 }

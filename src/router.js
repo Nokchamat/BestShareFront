@@ -7,6 +7,17 @@ import PageShareBoardByUser from "@/views/PageShareBoardByUser.vue";
 import AddPageShareBoard from "@/views/AddPageShareBoard.vue";
 import Chat from "@/views/Chat.vue";
 import UpdatePageShareBoard from "@/views/UpdatePageShareBoard.vue";
+import store from "@/store";
+
+const isVerifyEmail = () => (to, from, next) => {
+  if (store.state.isVerifyEmail) {
+    return next();
+  } else {
+    alert('게시물 작성하기 위해서는 이메일 인증이 필요합니다. 가입 시 이메일로 발송된 인증 코드로 마이페이지에서 이메일 인증을 해주세요.')
+    next('/');
+  }
+};
+
 
 const routes = [
   {
@@ -24,7 +35,8 @@ const routes = [
   },
   {
     path: "/add-pageshareboard",
-    component: AddPageShareBoard
+    component: AddPageShareBoard,
+    beforeEnter: isVerifyEmail()
   },
   {
     path: "/update-pageshareboard/:id",

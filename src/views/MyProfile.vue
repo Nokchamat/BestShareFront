@@ -34,6 +34,16 @@
                   </div>
                 </div>
               </section>
+              <section>
+                <div class="profile-top">
+                  <h3>이메일 인증</h3>
+                </div>
+                <div class="profile-bottom" style="display: inline-block">
+                  <label>코드 여부 : {{ store.state.isVerifyEmail ? "인증 완료" : "인증 필요"}}</label>
+                  <input  v-if="!store.state.isVerifyEmail" v-model="verifyCode" type="text" placeholder="인증 코드를 입력해주세요.">
+                  <button v-if="!store.state.isVerifyEmail" @click="postVerifyEmail" style="font-size: 16px">인증</button>
+                </div>
+              </section>
             </div>
           </div>
           <div class="col-8 col-12-medium imp-medium">
@@ -43,7 +53,8 @@
             </div>
             <div id="content">
               <!-- Content -->
-              <h3> 작성한 게시물 : {{ pageListSize }}</h3>
+              <h3 v-if="isCreatePage"> 작성한 게시물 : {{ pageListSize }}</h3>
+              <h3 v-if="!isCreatePage" > 좋아요 게시물 : {{ pageListSize }}</h3>
               <article>
                 <div id="features-wrapper">
                   <div class="container">
@@ -150,7 +161,7 @@ div .profile-bottom {
 <script>
 import Header from "@/components/layout/Header.vue";
 import pageShareBoard from "@/views/PageShareBoard.vue";
-import {getMyProfile, updateProfileImage} from "@/api/user";
+import {getMyProfile, postVerifyEmail, updateProfileImage} from "@/api/user";
 import {
   deletePageShareBoard,
   getAllListByUserId,
@@ -160,9 +171,13 @@ import {
 
 import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
 import {deleteUploadImage} from "@/api/upload";
+import store from "../store";
 
 export default {
   computed: {
+    store() {
+      return store
+    },
     pageShareBoard() {
       return pageShareBoard
     }
@@ -170,6 +185,7 @@ export default {
   components: {FontAwesomeIcon, Header},
   data() {
     return {
+      verifyCode: "",
       isCreatePage: true,
       pageDetailLink: "pageshareboard/",
       pageListSize: "",
@@ -287,6 +303,15 @@ export default {
         console.error(err)
       })
     },
+    postVerifyEmail() {
+      postVerifyEmail(this.verifyCode)
+      .then(()=> {
+        this.$store.dispatch('checkEmailVerify', { isVerifyEmail: true})
+      })
+      .catch((err) => {
+        alert(err.response.data.message)
+      })
+    }
   },
   mounted() {
     this.init();
